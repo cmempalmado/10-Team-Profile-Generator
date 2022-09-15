@@ -16,7 +16,6 @@ const generateManager = function (manager) {
     `;
 }
 
-
 const generateEngineer = function (engineer) {
     return `
     <div class="col-4 mt-4">
@@ -34,7 +33,6 @@ const generateEngineer = function (engineer) {
     </div>
     `
 }
-
 
 const generateIntern = function (intern) {
     return `
@@ -54,9 +52,7 @@ const generateIntern = function (intern) {
     `
 };
 
-
 generateHTML = (data) => {
-
 
     pageArray = []; 
 
@@ -88,15 +84,11 @@ generateHTML = (data) => {
         
     }
 
-
     const employeeCards = pageArray.join('')
-
-
     const generateTeam = generateTeamPage(employeeCards); 
     return generateTeam;
 
 }
-
 
 const generateTeamPage = function (employeeCards) {   
   return`
