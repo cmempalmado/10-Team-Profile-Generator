@@ -1,12 +1,23 @@
 {
-    "dependencies": {
-      "fs": "^0.0.1-security",
-      "inquirer": "^8.2.4",
-      "jest": "^29.0.3"
-    },
-    "scripts": {
-      "start": "node index",
-      "watch": "nodemon index",
-      "test": "jest --color"
-    }
+  "name": "module10challenge",
+  "version": "1.0.0",
+  "description": "OOP and testing for Module 10 Challenge",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --verbose --color test/*",
+    "start": "node index.js",
+    "reset": "node reset.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "8.2.4"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0"
   }
+}

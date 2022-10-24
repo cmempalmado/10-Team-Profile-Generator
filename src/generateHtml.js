@@ -1,4 +1,7 @@
-const generateManager = function (manager) {
+
+generateHTML = data => {
+
+const generateManager = manager => {
     return `
     <div class="col-4 mt-4">
         <div class="card h-100">
@@ -16,7 +19,7 @@ const generateManager = function (manager) {
     `;
 }
 
-const generateEngineer = function (engineer) {
+const generateEngineer = engineer => {
     return `
     <div class="col-4 mt-4">
         <div class="card h-100">
@@ -34,7 +37,7 @@ const generateEngineer = function (engineer) {
     `
 }
 
-const generateIntern = function (intern) {
+const generateIntern = intern => {
     return `
     <div class="col-4 mt-4">
         <div class="card h-100">
@@ -52,45 +55,38 @@ const generateIntern = function (intern) {
     `
 };
 
-generateHTML = (data) => {
-
-    pageArray = []; 
+teamArray = []; 
 
     for (let i = 0; i < data.length; i++) {
         const employee = data[i];
         const role = employee.getRole(); 
 
-
-
         if (role === 'Manager') {
             const managerCard = generateManager(employee);
-
-            pageArray.push(managerCard);
+            teamArray.push(managerCard);
         }
 
 
         if (role === 'Engineer') {
             const engineerCard = generateEngineer(employee);
-
-            pageArray.push(engineerCard);
+            teamArray.push(engineerCard);
         }
 
          
         if (role === 'Intern') {
             const internCard = generateIntern(employee);
-
-            pageArray.push(internCard);
+            teamArray.push(internCard);
         }
         
     }
 
-    const employeeCards = pageArray.join('')
+    const employeeCards = teamArray.join('')
     const generateTeam = generateTeamPage(employeeCards); 
     return generateTeam;
 
 }
 
-const generateTeamPage = function (employeeCards) {   
+module.exports = employeeCards => {   
   return`
   <!DOCTYPE html>
   <html lang="en">
