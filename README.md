@@ -38,6 +38,7 @@ THEN I exit the application, and the HTML is generated
 ```
 
 ## Mock-Up
+![Screenshot](https://user-images.githubusercontent.com/107980867/197750200-99ea8ab3-784f-4209-9ff7-32829446bc6f.jpg)
 
 
 
