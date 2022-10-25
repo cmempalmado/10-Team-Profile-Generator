@@ -1,20 +1,25 @@
-const generateHTML = require('./src/generateHtml');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern'); 
 const fs = require('fs'); 
+const path = require('path');
 const inquirer = require('inquirer');
 const teamArray = []; 
+const idArray = [];
+const generateHTML = require('./src/generateHtml.js');
+
+const DIST_DIR = path.resolve(__dirname, 'dist');
+const distPath = path.join(DIST_DIR, 'index.html');
+
 
 console.log(
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
     '\n\tWelcome To Team Profile Generator. Please Enter the following information.',
     '\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-    );
-
-const addManager = () => {
-    return inquirer
-    .prompt ([
+);
+function profileGenerator() {
+    function addManager() {
+        return inquirer.prompt ([
         {
             type: 'input',
             name: 'name',
@@ -25,7 +30,7 @@ const addManager = () => {
                 } else {
                     return console.log ("\nPlease Enter a valid Manager's Name!");
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -38,7 +43,7 @@ const addManager = () => {
                 } else {
                     return true;
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -52,7 +57,7 @@ const addManager = () => {
                     console.log ('\nPlease include an email suffix!')
                     return false; 
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -65,30 +70,49 @@ const addManager = () => {
                 } else {
                     return true;
                 }
-            }
-        }
+            },
+        },
     ])
-    .then((managerInput) => {
-        const manager = new Manager (managerInput.name, managerInput.id, managerInput.email, managerInput.officeNumber);
-        teamArray.push(manager); 
-        console.log(manager);
-    });
+        .then((managerInput) => {
+            const manager = new Manager (managerInput.name, managerInput.id, managerInput.email, managerInput.officeNumber);
+            teamArray.push(manager);
+            idArray.push(managerInput.managerId);
+            console.log(manager);
+            addMembers();
+        });
 }
 
 function addMembers() {
     console.log(`
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Adding Members to the team
+    \tAdd Members to the team
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     `);
-    inquirer
-    .prompt ([
+    inquirer.prompt ([
         {
             type: 'list',
             name: 'role',
             message: "Please choose your employee's role",
-            choices: ['Engineer', 'Intern', 'My team looks good now']
+            choices: ['Engineer', 'Intern', 'I already have a promising team'],
         },
+    ])
+    .then((userChoice) => {
+        switch (userChoice.role) {
+            case 'Engineer':
+                addEmployee();
+                break;
+            case 'Intern':
+                addEmployee();
+                break;
+            default:
+                createTeam();
+        }
+    });
+}
+
+
+function addEmployee() {
+    inquirer.prompt ([
         {
             type: 'input',
             name: 'name',
@@ -100,7 +124,7 @@ function addMembers() {
                     console.log ("\nPlease enter an employee's name!");
                     return false; 
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -113,7 +137,7 @@ function addMembers() {
                 } else {
                     return true;
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -127,7 +151,7 @@ function addMembers() {
                     console.log ('\nPlease enter an email!')
                     return false; 
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -140,7 +164,7 @@ function addMembers() {
                 } else {
                     console.log ("\nPlease enter the employee's github username!")
                 }
-            }
+            },
         },
         {
             type: 'input',
@@ -153,7 +177,7 @@ function addMembers() {
                 } else {
                     console.log ("\nPlease enter the intern's school!")
                 }
-            }
+            },
         },
         {
             type: 'confirm',
@@ -162,7 +186,7 @@ function addMembers() {
             default: false
         }
     ])
-    .then(teamData => {
+    .then((teamData) => {
         const { name, id, email, role, github, school, addMoreMember } = teamData; 
         let employee; 
 
@@ -179,33 +203,40 @@ function addMembers() {
         if (addMoreMember) {
             return addMembers(teamArray); 
         } else {
-            return teamArray;
+            createTeam();
         }
-    })
-
+        
+    });
+    
 };
 
-const createFile = (data) => {
-    fs.createFile('./dist/index.html', data, err => {
 
-        if (err) {
-            console.log(err);
-            return;
+function createTeam() {
+    console.log(
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "\n\tThe Team's Profile is now Generated. Please check out the index.html inside the dist folder.",
+        "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        );
+    if (!fs.existsSync(DIST_DIR)) {
+        fs.mkdirSync(DIST_DIR);
+      }
+      fs.writeFileSync(distPath, generateHTML(teamArray), 'utf-8');
+}
 
-        } else {
-            console.log("Your team profile has been successfully created! Please check out the index.html inside dist folder.")
-        }
-    })
-}; 
 
-addManager()
-  .then(addMembers)
-  .then(teamArray => {
-    return generateHTML(teamArray);
-  })
-  .then(pageHTML => {
-    return createFile(pageHTML);
-  })
-  .catch(err => {
- console.log(err);
-  });
+
+// const createFile = data => {
+//     fs.writeFileSync('./dist/index.html', data, err => {
+//         if (err) {
+//             console.log(err);
+//             return;
+//         } else {
+//             console.log("The Team's Profile is now Generated. Please check out the index.html inside the dist folder.")
+//         }
+//     })
+// }; 
+
+    addManager();
+}
+
+profileGenerator();

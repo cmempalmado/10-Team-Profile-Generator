@@ -1,89 +1,79 @@
-
-generateHTML = data => {
+const generateHTML = employeeCards => {
 
 const generateManager = manager => {
     return `
+    <div class="card employee-card">
     <div class="col-4 mt-4">
         <div class="card h-100">
             <div class="card-header">
-                <h3>${manager.name}</h3>
+                <h3>${manager.getName()}</h3>
                 <h4>Manager</h4><i class="material-icons">content_paste</i>
             </div>
             <div class="card-body">
-                <p class="id">ID: ${manager.id}</p>
-                <p class="email">Email: <a href="mailto:${manager.email}">${manager.email}</a></p>
-                <p class="office">Office Number: ${manager.officeNumber}</p>
+                <p class="id">ID: ${manager.getId()}</p>
+                <p class="email">Email: <a href="mailto:${manager.getEmail()}">${manager.getEmail()}</a></p>
+                <p class="office">Office Number: ${manager.getOfficeNumber()}</p>
             </div>
         </div>
     </div>
     `;
-}
+};
 
 const generateEngineer = engineer => {
     return `
+    <div class="card employee-card">
     <div class="col-4 mt-4">
         <div class="card h-100">
             <div class="card-header">
-                <h3>${engineer.name}</h3>
+                <h3>${engineer.getName()}</h3>
                 <h4>Engineer</h4><i class="material-icons">laptop_mac</i>
             </div>
             <div class="card-body">
-                <p class="id">ID: ${engineer.id}</p>
-                <p class="email">Email: <a href="mailto:${engineer.email}">${engineer.email}</a></p>
-                <p class="github">Github: <a href="https://github.com/${engineer.github}">${engineer.github}</a></p>
+                <p class="id">ID: ${engineer.getId()}</p>
+                <p class="email">Email: <a href="mailto:${engineer.getEmail()}">${engineer.getEmail()}</a></p>
+                <p class="github">Github: <a href="https://github.com/${engineer.getGithub()}">${engineer.getGithub()}</a></p>
             </div>
         </div>
     </div>
     `
-}
+};
 
 const generateIntern = intern => {
     return `
+    <div class="card employee-card">
     <div class="col-4 mt-4">
         <div class="card h-100">
             <div class="card-header">
-                <h3>${intern.name}</h3>
+                <h3>${intern.getName()}</h3>
                 <h4>Intern</h4><i class="material-icons">assignment_ind</i>
             </div>
             <div class="card-body">
-                <p class="id">ID: ${intern.id}</p>
-                <p class="email">Email:<a href="mailto:${intern.email}">${intern.email}</a></p>
-                <p class="school">School: ${intern.school}</p>
+                <p class="id">ID: ${intern.getId()}</p>
+                <p class="email">Email:<a href="mailto:${intern.getEmail()}">${intern.getEmail()}</a></p>
+                <p class="school">School: ${intern.getSchool()}</p>
             </div>
     </div>
 </div>
     `
 };
 
-teamArray = []; 
+const teamArray = []; 
+    teamArray.push(employeeCards
+        .filter(employee => employee.getRole() === "Manager")
+        .map(manager => generateManager(manager))
+    );
+    teamArray.push(employeeCards
+        .filter(employee => employee.getRole() === "Engineer")
+        .map(engineer => generateEngineer(engineer))
+        .join("")
+    );
+    teamArray.push(employeeCards
+        .filter(employee => employee.getRole() === "Intern")
+        .map(intern => generateIntern(intern))
+        .join("")
+    );
 
-    for (let i = 0; i < data.length; i++) {
-        const employee = data[i];
-        const role = employee.getRole(); 
-
-        if (role === 'Manager') {
-            const managerCard = generateManager(employee);
-            teamArray.push(managerCard);
-        }
-
-
-        if (role === 'Engineer') {
-            const engineerCard = generateEngineer(employee);
-            teamArray.push(engineerCard);
-        }
-
-         
-        if (role === 'Intern') {
-            const internCard = generateIntern(employee);
-            teamArray.push(internCard);
-        }
-        
-    }
-
-    const employeeCards = teamArray.join('')
-    const generateTeam = generateTeamPage(employeeCards); 
-    return generateTeam;
-
+return teamArray.join("");
 }
 
 module.exports = employeeCards => {   
@@ -110,7 +100,7 @@ module.exports = employeeCards => {
           <div class="container">
               <div class="row justify-content-center" id="team-cards">
                   <!--Team Cards-->
-                  ${employeeCards}
+                  ${generateHTML(employeeCards)}
               </div>
           </div>
       </main>
@@ -121,4 +111,4 @@ module.exports = employeeCards => {
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   </html>
 `;
-}
+};
